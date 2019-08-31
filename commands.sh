@@ -82,10 +82,40 @@ location /reactapp {
 
 # Make directory in sites available for both your React and Node app
 cd /etc/nginx/sites-available
-mkdir api.domain.com && domain.com
+mkdir api.domain.com && domain.com 
 
-sudo vim /etc/nginx/sites-available/api.domain.com 
-sudo vim /etc/nginx/sites-available/domain.com
+sudo vim /etc/nginx/sites-available/api.domain.com # Nodejs App
+sudo vim /etc/nginx/sites-available/domain.com # React app
+
+# For the React edit the script as follows
+server {
+    # Serve the build version of React
+    root /var/www/reactapp/build
+    server_name domain.com
+    index index.html index.htm 
+    location / {
+        try_files $uri /index.html
+    }
+}
+
+# Remove the default settings
+rm sites-enabled/default
+
+# link sites(enabled) to sites available 
+ln -s /etc/nginx/sites-enabled/api.domain.com /etc/nginx/sites-enabled
+ln -s /etc/nginx/sites-enabled/domain.com /etc/nginx/sites-enabled
+
+# G0 ahead and test nginx
+sudo nginx -t
+
+# Check logs for nginx
+cd /var/log/nginx/
+
+# Give permission for nginx for the build version of React application
+sudo chown -R www-data:www-data /var/www/domain.com/build
+
+# Restart nginx
+sudo systemctl restart nginx
     
 # Do stuff of running app using pm2
 
