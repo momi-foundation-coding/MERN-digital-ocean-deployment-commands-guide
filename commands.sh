@@ -52,16 +52,15 @@ pm2 start src/index.js
 
 pm2 startup systemd
 
-# Copy path shown and start the app
+# Instead of making new directories, use vim to open files
+# Under the sites-available for both Node and React apps.
 
-# Create a proxy and reverse proxy
+sudo vim /etc/nginx/sites-available/api.domain.com # Nodejs App
+sudo vim /etc/nginx/sites-available/domain.com # React app
 
-sudo vim /etc/nginx/sites-available/default
-
-# Change setting in location e.g 
-# This stuff can also be done seperately user 
-# server connection especialluy where it requires 
-location / {
+# Need to edit the /etc/nginx/sites-available/api.domain.com for the node application
+server {
+    location / {
         proxy_pass http://localhost:8000;
         proxy_http_version 1.1;
         proxy_set_header Upgrade $http_upgrade;
@@ -69,41 +68,27 @@ location / {
         proxy_set_header Host $host;
         proxy_cache_bypass $http_upgrade;
     }
+}
 
-# Set up location for React app
-location /reactapp {
-        proxy_pass http://localhost:3000;
-        proxy_http_version 1.1;
-        proxy_set_header Upgrade $http_upgrade;
-        proxy_set_header Connection 'upgrade';
-        proxy_set_header Host $host;
-        proxy_cache_bypass $http_upgrade;
-    }
-
-# Make directory in sites available for both your React and Node app
-cd /etc/nginx/sites-available
-mkdir api.domain.com && domain.com 
-
-sudo vim /etc/nginx/sites-available/api.domain.com # Nodejs App
-sudo vim /etc/nginx/sites-available/domain.com # React app
-
-# For the React edit the script as follows
+# For the React edit the script as follows 
+# This will be under the domain.com in /etc/nginx/sites-available/domain.com
 server {
     # Serve the build version of React
-    root /var/www/reactapp/build
-    server_name domain.com
-    index index.html index.htm 
+    root /var/www/reactapp/build;
+    server_name domain.com;
+    index index.html index.htm;
     location / {
-        try_files $uri /index.html
+        try_files $uri /index.html;
     }
 }
 
-# Remove the default settings
-rm sites-enabled/default
+# Remove the default settings for sites
+rm /etc/nginx/sites-enabled/default
+rm /etc/nginx/sites-available/default
 
 # link sites(enabled) to sites available 
-ln -s /etc/nginx/sites-enabled/api.domain.com /etc/nginx/sites-enabled
-ln -s /etc/nginx/sites-enabled/domain.com /etc/nginx/sites-enabled
+sudo ln -s /etc/nginx/sites-available/api.domain.com /etc/nginx/sites-enabled/api.domain.com
+sudo ln -s /etc/nginx/sites-available/domain.com /etc/nginx/sites-enabled/domain.com
 
 # G0 ahead and test nginx
 sudo nginx -t
