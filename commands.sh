@@ -54,6 +54,8 @@ sudo vim /etc/nginx/sites-available/domain.com # React app
 
 # Need to edit the /etc/nginx/sites-available/api.domain.com for the node application
 server {
+    root /var/www/api;
+    server_name api.domain.com;
     location / {
         proxy_pass http://localhost:8000;
         proxy_http_version 1.1;
