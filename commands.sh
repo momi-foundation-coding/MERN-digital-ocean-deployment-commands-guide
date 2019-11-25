@@ -9,21 +9,17 @@ sudo apt-get install npm
 sudo apt-get install build-essential
 
 # https://www.digitalocean.com/community/tutorials/how-to-install-node-js-on-ubuntu-16-04
-
 sudo npm install -g pm2
 
 sudo apt install -y mongodb
 
 # check status for mongodb `sudo systemctl status mongodb`
-
 sudo apt install nginx
 
 # Check installed app
-
 sudo ufw app list
 
 # since we havn't added any ssl we will open HTTP
-
 sudo ufw allow 'Nginx HTTP'
 
 cd ..
@@ -35,26 +31,24 @@ git clone repo/api
 git clone repo/client
 
 # For API
-
 cd api
 
 # Install dependancies 
-
 npm install
 
 # Run the app
-
 npm src/index.js
 
 # Then make use of pm2
+pm2 start src/index.js 
 
-pm2 start src/index.js
+# When using es6 modules run
+pm2 start src/index.js --interpreter ./node_modules/.bin/babel-node
 
 pm2 startup systemd
 
 # Instead of making new directories, use vim to open files
 # Under the sites-available for both Node and React apps.
-
 sudo vim /etc/nginx/sites-available/api.domain.com # Nodejs App
 sudo vim /etc/nginx/sites-available/domain.com # React app
 
