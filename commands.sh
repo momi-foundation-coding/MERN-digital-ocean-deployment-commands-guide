@@ -43,7 +43,20 @@ npm src/index.js
 pm2 start src/index.js 
 
 # When using es6 modules run
+# Make sure babel-node is installed globally
 pm2 start src/index.js --interpreter ./node_modules/.bin/babel-node
+
+# Alternative when using babel-node in your project for example
+# In your package.json you have 
+{
+    "start": "babel-node src/index.js"
+}
+# Do the following 
+pm2 start npm --name my-app-name -- run start 
+# Or, when need to specify port
+pm2 start npm --name my-app-name -- run start -- --name my-app-name --port 8000
+# The above can help when doing load balancing since, you can open connection in another port for the app
+pm2 start npm --name my-app-name-instance-2 -- run start -- --name my-app-name-instance-2 --port 8001
 
 pm2 startup systemd
 
