@@ -106,7 +106,7 @@ sudo nginx -t
 cd /var/log/nginx/
 
 # Give permission for nginx for the build version of React application
-sudo chown -R www-data:www-data /var/www/domain.com/build
+sudo chown -R www-data:www-data /var/www/reactapp/build
 
 # Restart nginx
 sudo systemctl restart nginx
@@ -117,7 +117,7 @@ cd ..
 cd /var/www/reactapp
 npm install
 
-pm2 start npm -- start
+npm build # to serve the build version of code
 
 # Now checking on mongodb, set up .env in digital ocean
 
